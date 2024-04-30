@@ -1,7 +1,8 @@
 class TourResult {
-    constructor(tour, cost) {
+    constructor(tour, detailTour , cost) {
         this.tour = tour;
         this.cost = cost;
+        this.detailTour = detailTour;
     }
 }
 
@@ -11,21 +12,24 @@ function findTour(n, u, c) {
                      // nên đỉnh lùi lại 1 đơn vị
     let v = u_c;
     let tour = [v + 1];
+    let detailsTour = [v + 1];
     visited[v] = true;
     let cost = 0;
 
     for (let i = 0; i < n - 1; i++) {
         let w = -1;
         let minCost = Infinity;
-
+        let stay = 0;
         for (let j = 0; j < n; j++) {
             if (c[v][j] < minCost && !visited[j]) {
                 minCost = c[v][j];
                 w = j;
+                stay = j;
             }
         }
-
+        detailsTour.push(minCost);
         tour.push(w + 1);
+        // console.log(`${i} to thanh pho la ${stay}: ${minCost}\n`)
         cost += minCost;
         visited[w] = true;
         v = w;
@@ -33,7 +37,7 @@ function findTour(n, u, c) {
 
     cost += c[v][u_c];
     tour.push(u);
-    return new TourResult(tour, cost);
+    return new TourResult(tour, detailsTour, cost);
 }
 
 // Cost matrix
@@ -53,7 +57,7 @@ const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
-
+const detail = [];
 const resultTourMan = [];
 // console.log("Nhập thành phố xuất phát u: ");
 
@@ -62,7 +66,7 @@ rl.question('Nhập thành phố xuất phát u: ', (answer) => {
 
   const result = findTour(6, u, c);
   resultTourMan.push(...result.tour);
-
+  detail.push(...result.detailTour);
   console.log("Chi Phi Toi Uu La:");
   let sizeList = resultTourMan.length;
   let currentIndex = 0;
@@ -77,7 +81,12 @@ rl.question('Nhập thành phố xuất phát u: ', (answer) => {
     currentIndex++;
   }
 
-  console.log("\nCost: " + result.cost);
+  for (x of detail) {
+    console.log(`${x} and `);
+  }
+
+
+  console.log("Cost: " + result.cost);
   
   rl.close();
 });

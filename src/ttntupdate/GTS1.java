@@ -5,11 +5,13 @@ public class GTS1 {
 
     public static class TourResult {
         List<Integer> tour;
+        List<Integer> detail;
         int cost;
 
-        public TourResult(List<Integer> tour, int cost) {
+        public TourResult(List<Integer> tour, List<Integer> detail, int cost) {
             this.tour = tour;
             this.cost = cost;
+            this.detail = detail;
         }
     }
 
@@ -19,10 +21,11 @@ public class GTS1 {
 												// nên đỉnh lùi lại 1 đơn vị
         int v = u_c;
         List<Integer> tour = new ArrayList<>();
+        List<Integer> detail = new ArrayList<>();
         tour.add(v+1);
         visited[v] = true;
         int cost = 0;
-
+        int minCostDetail = 0; 
         for (int i = 0; i < n - 1; i++) {
             int w = -1;
             int minCost = Integer.MAX_VALUE;
@@ -30,11 +33,13 @@ public class GTS1 {
             for (int j = 0; j < n; j++) {
                 if (c[v][j] < minCost && !visited[j]) {
                     minCost = c[v][j];
+                    minCostDetail = minCost;
                     w = j;
                 }
             }
 
             tour.add(w+1);
+            detail.add(minCost);
             cost += minCost;
             visited[w] = true;
             v = w;
@@ -42,7 +47,7 @@ public class GTS1 {
         }
     cost += c[v][u_c];
     tour.add(u);
-    return new TourResult(tour, cost);
+    return new TourResult(tour, detail,cost);
 }
 
 public static void main(String[] args) {
@@ -58,6 +63,7 @@ public static void main(String[] args) {
     
     Scanner scanner = new Scanner(System.in);
     List<Integer> resultTourMan = new ArrayList<>();
+    List<Integer> detail = new ArrayList<>();
     // System.out.print("Nhập thành phố xuất phát u =  ");
     // int u = scanner.nextInt();
 
@@ -67,6 +73,7 @@ public static void main(String[] args) {
     TourResult result = findTour(6, u, c);
 
     resultTourMan = result.tour;
+    detail = result.detail;
     System.out.println("Cost optimize is: ");
     // System.out.println("Tour: " + result.tour);
     int sizeList = resultTourMan.size();
@@ -83,6 +90,10 @@ public static void main(String[] args) {
         
         currentIndex++;
 
+    }
+
+    for(int x : detail ) { 
+        System.out.printf(x + " and ");
     }
     
     System.out.printf("\n");
